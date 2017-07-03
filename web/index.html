@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Message Driven Bean</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+    </head>
+    <body style="font-family: 'Indie Flower', cursive;">
+        <div style="background-image: url('tafel.jpg'); background-repeat:no-repeat; background-position: center top; background-size: 100% auto; position:relative; width:600px;height:1000px; margin-left:auto; margin-right:auto;">
+            
+            <h1 id="header" style="position:relative; text-align:center; margin-top:3px; color:white; top:3%;">Tax Calculator</h1>
+            
+            <form style="position:relative; left:30%; width:40%; top:3%;">
+                <label style="position:relative; float:left; color:white;">Amount:</label>
+                <input id="amount" type="text" name="amount" style="position:relative; float:right; margin: 0px 0px 5px 0px">
+                <label style="position:relative; float:left; clear:both; color:white;">+ Tax (%):</label>
+                <input id="tax" type="text" name="tax" style="position:relative; float:right; margin: 0px 0px 5px 0px">
+                
+                <div style="clear:both; position:relative; left:40%;">
+                <select id="currency">
+                    <option value="Dollar">Dollar</option>
+                    <option value="Euro">Euro</option>
+                    <option value="Pound">Pound</option>
+                </select> <br>
+                </div>
+                <button type="button" style="position:relative; left:30%; margin:5px 0px 0px 0px;" onclick="calculate()">Calculate</button>
+                <button type="reset" style="position:relative; left:30%; margin:5px 0px 0px 0px;">Reset</button>                
+            </form>
+            
+            <h2 id="result" style="position:relative; clear:both; color:white; top:3%; text-align: center;"></h2>
+            
+            <p style="position: relative; text-align: center; font-size: 10pt; top:25%;">&copy HS Fulda, Middleware Lecture, For Demonstration Purpose Only</p>
+
+        </div>
+        <script>
+            /**
+             * Function to calculate the total amount. Calls the backend for this.
+             * @returns void
+             */
+            function calculate(){
+                var amount = $("#amount").val();
+                var tax = $("#tax").val();
+                var currency = $( "#currency option:selected" ).text();
+                var result;      
+                
+                //just a simple test to check whether all needed values are filled in or not
+                if(amount.length === 0 || tax.length === 0){
+                    result = "Please fill in the form";
+                    $("#result").text(result);
+                   
+                }else{
+                    amount = amount.replace(",",".");
+                    tax = tax.replace(",", ".");
+                    
+                    //send values via post request to the backend
+                    $.post( "http://localhost:8081/Exercise6/TaxCalcServlet", { amount: amount, tax: tax, currency: currency } )
+                            .done(function( data ){
+                                $("#result").text(data);
+                            }); 
+                }
+
+                
+            }
+ 
+            
+        </script>
+    </body>
+</html>
